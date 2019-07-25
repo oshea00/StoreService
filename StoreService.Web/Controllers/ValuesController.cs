@@ -40,6 +40,7 @@ namespace StoreService.Web.Controllers
             });
 
             IDatabase cache = lazyConn.Value.GetDatabase();
+            strings.Add("REDIS CACHE");
             strings.Add(cache.Execute("PING").ToString());
             strings.Add(cache.StringSet("Message","Hello!").ToString());
             strings.Add(cache.StringGet("Message").ToString());
