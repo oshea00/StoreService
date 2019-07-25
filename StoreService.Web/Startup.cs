@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,11 +24,14 @@ namespace StoreService.Web
     public class Startup
     {
         ILogger<Startup> logger;
+        private IHostingEnvironment env;
 
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration, ILogger<Startup> logger,
+            IHostingEnvironment env)
         {
             Configuration = configuration;
             this.logger = logger;
+            this.env = env;
             //logger.LogInformation($"Secret: {Configuration["Kestrel:Certificates:Development:Password"]}");
         }
 
@@ -40,7 +44,18 @@ namespace StoreService.Web
                 Configuration.GetConnectionString(nameof(StoreContext)));
             conBuilder.Password = Configuration["StorePassword"];
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            if (env.IsDevelopment())
+            {
+                services.AddMvc(opts =>
+                {
+                    opts.Filters.Add(new AllowAnonymousFilter());
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }
+            else
+            {
+                services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }
+
             services.AddDbContext<StoreContext>(builder =>
             {
                 builder.UseSqlServer(
