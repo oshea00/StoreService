@@ -28,7 +28,10 @@ namespace StoreService.Web
             try
             {
                 Log.Information("Starting Stores App Web Host");
-                CreateWebHostBuilder(args).Build().Run();
+                CreateWebHostBuilder(args)
+                    .Build()
+                    .Migrate()
+                    .Run();
             }
             catch (Exception ex)
             {

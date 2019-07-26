@@ -17,6 +17,10 @@ namespace StoreService.Web.Models
 
         public virtual DbSet<OrderItems> OrderItems { get; set; }
         public virtual DbSet<Orders> Orders { get; set; }
+        public virtual DbSet<Author> Authors { get; set; }
+        public virtual DbSet<ProgramBook> ProgramBooks { get; set; }
+        public virtual DbSet<Topic> Topics { get; set; }
+        public virtual DbSet<ProgramListing> ProgramListings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +30,18 @@ namespace StoreService.Web.Models
             {
                 entity.HasIndex(e => e.OrdersId);
             });
+
+            SeedData(modelBuilder);
+        }
+
+        protected void SeedData(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Topic>().HasData(
+                new Topic { TopicId = 1, TopicName = "Engineering" },
+                new Topic { TopicId = 2, TopicName = "Games" },
+                new Topic { TopicId = 3, TopicName = "Mathematics" },
+                new Topic { TopicId = 4, TopicName = "Navigation" }
+            );
         }
     }
 }
