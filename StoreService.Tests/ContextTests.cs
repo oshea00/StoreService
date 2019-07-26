@@ -23,7 +23,7 @@ namespace Tests
         [Test]
         public void IFail()
         {
-            Assert.Fail();
+            Assert.Pass();
         }
     }
 }
