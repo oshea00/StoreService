@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using StoreService.Web.Models;
+using StoreService.Web.Services;
 
 namespace StoreService.Web
 {
@@ -29,7 +31,7 @@ namespace StoreService.Web
         public Startup(IConfiguration configuration, ILogger<Startup> logger,
             IHostingEnvironment env)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
             this.logger = logger;
             this.env = env;
             //logger.LogInformation($"Secret: {Configuration["Kestrel:Certificates:Development:Password"]}");
@@ -55,6 +57,9 @@ namespace StoreService.Web
             {
                 services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             }
+
+            services.AddAutoMapper(typeof(Startup));
+            services.AddTransient<IAuthorService, AuthorService>();
 
             services.AddDbContext<StoreContext>(builder =>
             {

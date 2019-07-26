@@ -1,5 +1,8 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
+using StoreService.Web.DTO;
 using StoreService.Web.Models;
 using System.Threading.Tasks;
 
@@ -20,10 +23,5 @@ namespace Tests
             }
         }
 
-        [Test]
-        public void IFail()
-        {
-            Assert.Pass();
-        }
     }
 }
