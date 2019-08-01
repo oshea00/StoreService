@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -50,7 +51,7 @@ namespace StoreService.Web
             {
                 services.AddMvc(opts =>
                 {
-                    opts.Filters.Add(new AllowAnonymousFilter());
+                    //opts.Filters.Add(new AllowAnonymousFilter());
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             }
             else
@@ -83,6 +84,23 @@ namespace StoreService.Web
                 options.Authority = "https://dev--8x78t70.auth0.com";
                 options.Audience = "https://StoreFuturTrends.com";
             });
+
+            services.AddAuthorization(options => {
+                options.AddPolicy("query", policy => policy.Requirements.Add(
+                        new HasScopeRequirement("query", "https://dev--8x78t70.auth0.com/")
+                    ));
+                options.AddPolicy("add:author", policy => policy.Requirements.Add(
+                        new HasScopeRequirement("add:author", "https://dev--8x78t70.auth0.com/")
+                    ));
+                options.AddPolicy("update:author", policy => policy.Requirements.Add(
+                        new HasScopeRequirement("update:author", "https://dev--8x78t70.auth0.com/")
+                    ));
+                options.AddPolicy("delete:author", policy => policy.Requirements.Add(
+                        new HasScopeRequirement("delete:author", "https://dev--8x78t70.auth0.com/")
+                    ));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,6 +109,10 @@ namespace StoreService.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors(options => {
+                    options.AllowAnyOrigin();
+                    options.AllowAnyHeader();
+                });
             }
             else
             {

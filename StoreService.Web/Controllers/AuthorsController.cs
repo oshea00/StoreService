@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StoreService.Web.DTO;
@@ -35,16 +34,17 @@ namespace StoreService.Web.Controllers
 
         // GET: api/Authors
         [HttpGet]
+        [Authorize("query")]
         public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors()
         {
             return await _context.Authors
-                .Include(a=>a.ProgramBooks)
                 .ProjectTo<AuthorDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
+        [Authorize("query")]
         public async Task<ActionResult<AuthorDto>> GetAuthor(int id)
         {
             var author = await _context.Authors
@@ -69,6 +69,7 @@ namespace StoreService.Web.Controllers
 
         // PUT: api/Authors/5
         [HttpPut("{id}")]
+        [Authorize("update:author")]
         public async Task<IActionResult> PutAuthor(int id, AuthorDto author)
         {
             if (id != author.AuthorId)
@@ -99,6 +100,7 @@ namespace StoreService.Web.Controllers
 
         // POST: api/Authors
         [HttpPost]
+        [Authorize("add:author")]
         public async Task<ActionResult<AuthorDto>> PostAuthor(AuthorDto author)
         {
             var authormod = mapper.Map<Author>(author);
@@ -111,6 +113,7 @@ namespace StoreService.Web.Controllers
 
         // DELETE: api/Authors/5
         [HttpDelete("{id}")]
+        [Authorize("delete:author")]
         public async Task<ActionResult<AuthorDto>> DeleteAuthor(int id)
         {
             var author = await _context.Authors.FindAsync(id);
