@@ -35,12 +35,10 @@ namespace StoreService.Web
             this.Configuration = configuration;
             this.logger = logger;
             this.env = env;
-            //logger.LogInformation($"Secret: {Configuration["Kestrel:Certificates:Development:Password"]}");
         }
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             var conBuilder = new SqlConnectionStringBuilder(
@@ -51,7 +49,6 @@ namespace StoreService.Web
             {
                 services.AddMvc(opts =>
                 {
-                    //opts.Filters.Add(new AllowAnonymousFilter());
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             }
             else
@@ -74,7 +71,6 @@ namespace StoreService.Web
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Store API", Version= "v1"});
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //c.IncludeXmlComments(xmlPath);
             });
 
             var authDomain = $"https://{Configuration["AuthDomain"]}/";
@@ -106,7 +102,6 @@ namespace StoreService.Web
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -119,7 +114,6 @@ namespace StoreService.Web
             }
             else
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
