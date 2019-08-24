@@ -77,26 +77,29 @@ namespace StoreService.Web
                 //c.IncludeXmlComments(xmlPath);
             });
 
+            var authDomain = $"https://{Configuration["AuthDomain"]}/";
+            var authAudience = Configuration["AuthAudience"];
+
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options=>{
-                options.Authority = "https://dev--8x78t70.auth0.com";
-                options.Audience = "https://StoreFuturTrends.com";
+                options.Authority = authDomain;
+                options.Audience = authAudience;
             });
 
             services.AddAuthorization(options => {
                 options.AddPolicy("query", policy => policy.Requirements.Add(
-                        new HasScopeRequirement("query", "https://dev--8x78t70.auth0.com/")
+                        new HasScopeRequirement("query", authDomain)
                     ));
                 options.AddPolicy("add:author", policy => policy.Requirements.Add(
-                        new HasScopeRequirement("add:author", "https://dev--8x78t70.auth0.com/")
+                        new HasScopeRequirement("add:author", authDomain)
                     ));
                 options.AddPolicy("update:author", policy => policy.Requirements.Add(
-                        new HasScopeRequirement("update:author", "https://dev--8x78t70.auth0.com/")
+                        new HasScopeRequirement("update:author", authDomain)
                     ));
                 options.AddPolicy("delete:author", policy => policy.Requirements.Add(
-                        new HasScopeRequirement("delete:author", "https://dev--8x78t70.auth0.com/")
+                        new HasScopeRequirement("delete:author", authDomain)
                     ));
             });
 
